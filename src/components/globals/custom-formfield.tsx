@@ -193,16 +193,35 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <InputOTP
+            className="w-full flex justify-between"
             maxLength={OPT_LENGTH}
             pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
             {...field}
           >
-            <InputOTPSlot index={0} />
-            <InputOTPSlot index={1} />
-            <InputOTPSlot index={2} />
-            <InputOTPSlot index={3} />
-            <InputOTPSlot index={4} />
-            <InputOTPSlot index={5} />
+            <InputOTPSlot
+              index={0}
+              className="justify-center flex border border-input rounded-lg size-16 gap-4"
+            />
+            <InputOTPSlot
+              index={1}
+              className="justify-center flex border border-input rounded-lg size-16 gap-4"
+            />
+            <InputOTPSlot
+              index={2}
+              className="justify-center flex border border-input rounded-lg size-16 gap-4"
+            />
+            <InputOTPSlot
+              index={3}
+              className="justify-center flex border border-input rounded-lg size-16 gap-4"
+            />
+            <InputOTPSlot
+              index={4}
+              className="justify-center flex border border-input rounded-lg size-16 gap-4"
+            />
+            <InputOTPSlot
+              index={5}
+              className="justify-center flex border border-input rounded-lg size-16 gap-4"
+            />
           </InputOTP>
         </FormControl>
       );

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -11,9 +12,11 @@ import CustomFormField from "../globals/custom-formfield";
 import { FormFieldType } from "@/lib/constants";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
-import Link from "next/link";
+import { useSignUp } from "@clerk/nextjs";
+import { toast } from "sonner";
 
 const SignUpForm = () => {
+  const { isLoaded, signUp } = useSignUp();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -31,19 +34,26 @@ const SignUpForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof SignupValidation>) => {
-    setIsLoading(true);
-    // createMenu(values)
-    //   .then((data) => {
-    //     if (data.success) {
-    //       toast.success(data.success);
-    //       router.push("/admin/menus");
-    //     } else {
-    //       toast.error(data.error);
-    //     }
-    //   })
-    //   .finally(() => {
-    //     setIsLoading(false);
-    //   });
+    if (!isLoaded) return;
+    try {
+      setIsLoading(true);
+      await signUp.create({
+        emailAddress: values.email,
+        password: values.password,
+        firstName: values.firstName,
+        lastName: values.lastName,
+      });
+
+      // Send OTP to email
+      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
+      router.push(`/verify-email?email=${values.email}`);
+      localStorage.setItem("Data", JSON.stringify(values));
+    } catch (error: any) {
+      console.error(JSON.stringify(error, null, 2));
+      toast.error(error.message || "Failed to sign up.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -148,7 +158,9 @@ const SignUpForm = () => {
               type="button"
               className="w-full"
               variant="default"
-              onClick={() => router.push("/senior-and-pwd-account-registration")}
+              onClick={() =>
+                router.push("/senior-and-pwd-account-registration")
+              }
               disabled={isLoading}
               size="sm"
             >

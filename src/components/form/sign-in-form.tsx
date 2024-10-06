@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -12,8 +13,11 @@ import { FormFieldType } from "@/lib/constants";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useSignIn } from "@clerk/nextjs";
+import { toast } from "sonner";
 
 const SignInForm = () => {
+  const { isLoaded, signIn, setActive } = useSignIn();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -26,19 +30,30 @@ const SignInForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof SigninValidation>) => {
-    setIsLoading(true);
-    // createMenu(values)
-    //   .then((data) => {
-    //     if (data.success) {
-    //       toast.success(data.success);
-    //       router.push("/admin/menus");
-    //     } else {
-    //       toast.error(data.error);
-    //     }
-    //   })
-    //   .finally(() => {
-    //     setIsLoading(false);
-    //   });
+    if (!isLoaded) return;
+
+    try {
+      setIsLoading(true);
+      const signInAttempt = await signIn.create({
+        identifier: values.email,
+        password: values.password,
+      });
+
+      // If sign-in process is complete, set the created session as active and redirect the user
+      if (signInAttempt.status === "complete") {
+        await setActive({ session: signInAttempt.createdSessionId });
+        router.push("/");
+      } else {
+        console.error(JSON.stringify(signInAttempt, null, 2));
+      }
+    } catch (error: any) {
+      console.error(JSON.stringify(error, null, 2));
+      toast.error(
+        error.message || "No user found with the provided credentials."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -79,11 +94,22 @@ const SignInForm = () => {
               disabled={isLoading}
             />
           </div>
-          <Button type="submit" className="w-20" variant="primary" disabled={isLoading} size="sm">
+          <Button
+            type="submit"
+            className="w-20"
+            variant="primary"
+            disabled={isLoading}
+            size="sm"
+          >
             {isLoading && <Loader2 className="animate-spin w-4 h-4 mr-2" />}
             LOGIN
           </Button>
-          <Link href="#" className="text-[#437634] hover:underline font-semibold text-sm">Forgot your password?</Link>
+          <Link
+            href="#"
+            className="text-[#437634] hover:underline font-semibold text-sm"
+          >
+            Forgot your password?
+          </Link>
         </div>
       </form>
     </Form>

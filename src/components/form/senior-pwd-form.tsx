@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -5,19 +6,22 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { SignupValidation } from "@/lib/validators";
+import { SeniorPwdRegistration } from "@/lib/validators";
 import { Form } from "../ui/form";
 import CustomFormField from "../globals/custom-formfield";
 import { FormFieldType } from "@/lib/constants";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
+import { useSignUp } from "@clerk/nextjs";
+import { toast } from "sonner";
 
 const PWDSeniorForm = () => {
+  const { isLoaded, signUp } = useSignUp();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof SignupValidation>>({
-    resolver: zodResolver(SignupValidation),
+  const form = useForm<z.infer<typeof SeniorPwdRegistration>>({
+    resolver: zodResolver(SeniorPwdRegistration),
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -25,24 +29,34 @@ const PWDSeniorForm = () => {
       zipCode: "",
       email: "",
       password: "",
+      seniorPwdId: "",
+      seniorPwdBookletImage: "",
+      seniorPwdIdImage: "",
       acceptPolicy: false,
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof SignupValidation>) => {
-    setIsLoading(true);
-    // createMenu(values)
-    //   .then((data) => {
-    //     if (data.success) {
-    //       toast.success(data.success);
-    //       router.push("/admin/menus");
-    //     } else {
-    //       toast.error(data.error);
-    //     }
-    //   })
-    //   .finally(() => {
-    //     setIsLoading(false);
-    //   });
+  const onSubmit = async (values: z.infer<typeof SeniorPwdRegistration>) => {
+    if (!isLoaded) return;
+    try {
+      setIsLoading(true);
+      await signUp.create({
+        emailAddress: values.email,
+        password: values.password,
+        firstName: values.firstName,
+        lastName: values.lastName,
+      });
+
+      // Send OTP to email
+      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
+      router.push(`/verify-email?email=${values.email}`);
+      localStorage.setItem("Data", JSON.stringify(values));
+    } catch (error: any) {
+      console.error(JSON.stringify(error, null, 2));
+      toast.error(error.message || "Failed to sign up.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -132,7 +146,7 @@ const PWDSeniorForm = () => {
               control={form.control}
               fieldType={FormFieldType.DROP_ZONE}
               label="Senior Citizen / PWD Booklet"
-              name="seniorPwdBooklet"
+              name="seniorPwdBookletImage"
               isRequired={true}
               disabled={isLoading}
             />
@@ -140,7 +154,7 @@ const PWDSeniorForm = () => {
               control={form.control}
               fieldType={FormFieldType.DROP_ZONE}
               label="Senior Citizen / PWD ID"
-              name="seniorPwdId"
+              name="seniorPwdIdImage"
               isRequired={true}
               disabled={isLoading}
             />
