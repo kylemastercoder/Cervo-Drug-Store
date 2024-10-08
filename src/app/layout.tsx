@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/globals/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
+import { TanstackProvider } from "../components/providers/tanstack-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -39,7 +40,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <TanstackProvider>{children}</TanstackProvider>
             <Toaster richColors position="top-right" />
           </ThemeProvider>
         </body>

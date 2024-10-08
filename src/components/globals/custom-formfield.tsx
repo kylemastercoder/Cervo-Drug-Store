@@ -43,6 +43,7 @@ import { DynamicSelect } from "./dynamic-select";
 import { Textarea } from "../ui/textarea";
 import ImageUpload from "./image-uploader";
 import { DynamicArraySelect } from "./dynamic-array-select";
+import { Switch } from "../ui/switch";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
@@ -378,6 +379,22 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
             onImageUpload={(url) => field.onChange(url)}
           />
         </FormControl>
+      );
+
+    case FormFieldType.SWITCH:
+      return (
+        <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+          <div className="space-y-0.5">
+            <FormDescription>{description}</FormDescription>
+          </div>
+          <FormControl>
+            <Switch
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              disabled={disabled}
+            />
+          </FormControl>
+        </div>
       );
 
     case FormFieldType.HIDDEN:

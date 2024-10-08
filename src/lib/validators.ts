@@ -89,3 +89,13 @@ export const CheckoutValidation = z.object({
   zipCode: z.string().min(1, { message: "Postal / ZIP code is required" }),
   prescription: z.string().optional(),
 });
+
+export const BannerValidation = z.object({
+  image: z.string().min(1, { message: "Banner image is required" }),
+});
+
+export const PromotionValidation = z.object({
+  image: z.string().min(1, { message: "Banner image is required" }),
+  isFeatured: z.boolean().optional(),
+});
+

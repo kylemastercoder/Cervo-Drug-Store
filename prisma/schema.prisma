@@ -14,17 +14,32 @@ datasource db {
 }
 
 model User {
-  id        String @id @default(cuid())
-  email     String @unique
-  firstName String
-  lastName  String
-  password  String
-  contactNumber String
-  zipCode String
-  userType String
-  seniorPwdId String?
+  id                    String   @id @default(cuid())
+  email                 String   @unique
+  firstName             String
+  lastName              String
+  password              String
+  contactNumber         String
+  zipCode               String
+  userType              String
+  seniorPwdId           String?
   seniorPwdBookletImage String?
-  seniorPwdIdImage String?
+  seniorPwdIdImage      String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model Banner {
+  id        String   @id @default(cuid())
+  image     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Promotions {
+  id         String   @id @default(cuid())
+  image      String
+  isFeatured Boolean   @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

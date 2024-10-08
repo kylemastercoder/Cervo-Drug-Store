@@ -3,38 +3,50 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-
-const images = [
-  "/images/slider1.webp",
-  "/images/slider2.webp",
-  "/images/slider3.webp",
-  "/images/slider4.webp",
-];
+import { Banner } from "@prisma/client";
+import { getAllBanner } from "@/actions/banner";
+import { toast } from "sonner";
 
 const ImageSlider = () => {
+  const [imageData, setImageData] = useState<Banner[]>([]);
   const [imageIndex, setImageIndex] = useState(0);
+
+  useEffect(() => {
+    const fetchBanner = async () => {
+      const response = await getAllBanner();
+      if (response.data) {
+        setImageData(response.data);
+      } else {
+        toast.error(response.error || "An error occurred");
+      }
+    };
+
+    fetchBanner();
+  }, []);
 
   const showPrevImage = () => {
     setImageIndex((index) => {
-      if (index === 0) return images.length - 1;
+      if (index === 0) return imageData.length - 1;
       return index - 1;
     });
   };
 
   const showNextImage = () => {
     setImageIndex((index) => {
-      if (index === images.length - 1) return 0;
+      if (index === imageData.length - 1) return 0;
       return index + 1;
     });
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setImageIndex((index) => (index === images.length - 1 ? 0 : index + 1));
+      setImageIndex((index) =>
+        index === imageData.length - 1 ? 0 : index + 1
+      );
     }, 3000); // Change image every 3 seconds
 
     return () => clearInterval(interval);
-  }, []);
+  }, [imageData.length]);
 
   return (
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
@@ -42,13 +54,13 @@ const ImageSlider = () => {
         className="w-full h-[600px] flex transition-transform duration-500 ease-in-out"
         style={{ transform: `translateX(${-imageIndex * 100}%)` }}
       >
-        {images.map((url, idx) => (
+        {imageData.map((url, idx) => (
           <div
             key={idx}
             className="w-full h-full flex-shrink-0 relative rounded-xl"
           >
             <Image
-              src={url}
+              src={url.image}
               alt={`Slider ${idx + 1}`}
               fill
               className="w-full h-full object-cover rounded-xl"
@@ -62,7 +74,7 @@ const ImageSlider = () => {
         <button onClick={showPrevImage} className="squish mx-10">
           <IconChevronLeft size={25} color="white" />
         </button>
-        {images.map((_, idx) => (
+        {imageData.map((_, idx) => (
           <button
             key={idx}
             onClick={() => setImageIndex(idx)}

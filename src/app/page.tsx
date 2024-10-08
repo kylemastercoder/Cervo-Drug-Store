@@ -7,8 +7,8 @@ import FeaturedProducts from "@/components/landing-page/featured-products";
 import Footer from "@/components/landing-page/footer";
 import ImageSlider from "@/components/landing-page/image-slider";
 import Navbar from "@/components/landing-page/navbar";
+import PromotionContent from "@/components/landing-page/promotion-content";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import React from "react";
 
 const Home = () => {
@@ -36,32 +36,7 @@ const Home = () => {
             Explore Our Special Offers
           </p>
         </div>
-        <div className="grid grid-cols-3 gap-5 mt-6">
-          <div className="relative w-full h-[300px]">
-            <Image
-              src="/promos/1.jpg"
-              alt="Promo"
-              fill
-              className="w-full h-full rounded-xl"
-            />
-          </div>
-          <div className="relative w-full h-[300px]">
-            <Image
-              src="/promos/2.jpg"
-              alt="Promo"
-              fill
-              className="w-full h-full rounded-xl"
-            />
-          </div>
-          <div className="relative w-full h-[300px]">
-            <Image
-              src="/promos/3.jpg"
-              alt="Promo"
-              fill
-              className="w-full h-full rounded-xl"
-            />
-          </div>
-        </div>
+        <PromotionContent />
       </section>
       <section className="md:px-60 bg-[#f5f5f5] px-4 py-10">
         <div className="bg-white rounded-lg py-2 px-3 shadow-md border">
