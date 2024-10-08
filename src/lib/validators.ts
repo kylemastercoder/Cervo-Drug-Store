@@ -95,7 +95,11 @@ export const BannerValidation = z.object({
 });
 
 export const PromotionValidation = z.object({
-  image: z.string().min(1, { message: "Banner image is required" }),
+  image: z.string().min(1, { message: "Promotional image is required" }),
   isFeatured: z.boolean().optional(),
 });
 
+export const CategoryValidation = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  image: z.string().min(1, { message: "Category image is required" }),
+});
