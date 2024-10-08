@@ -5,6 +5,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { CellAction } from "./cell-action";
+import Link from "next/link";
 
 export type PromotionColumn = {
   id: string;
@@ -17,6 +18,9 @@ export const columns: ColumnDef<PromotionColumn>[] = [
   {
     accessorKey: "promotion",
     header: "Promotion",
+    cell: ({ row }) => (
+      <Link className="cursor-pointer font-semibold text-orange-600" href={row.original.promotion}>{row.original.promotion}</Link>
+  )
   },
   {
     accessorKey: "isFeatured",

@@ -28,6 +28,7 @@ const AlertModal: React.FC<AlertModalProps> = ({
 
   return (
     <Modal
+      className="max-w-lg"
       title="Are you sure you want to delete this data?"
       description="This action cannot be undone."
       isOpen={isOpen}

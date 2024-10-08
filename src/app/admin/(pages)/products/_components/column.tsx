@@ -7,19 +7,33 @@ import { ColumnDef } from "@tanstack/react-table";
 import { CellAction } from "./cell-action";
 import Link from "next/link";
 
-export type BannerColumn = {
+export type ProductColumn = {
   id: string;
-  banner: string;
+  name: string;
+  image: string;
+  category: string;
+  price: any;
+  isFeatured: boolean;
+  isPrescription: boolean;
   createdAt: string;
 };
 
-export const columns: ColumnDef<BannerColumn>[] = [
+export const columns: ColumnDef<ProductColumn>[] = [
   {
-    accessorKey: "banner",
-    header: "Banner",
+    accessorKey: "name",
+    header: "Product",
+  },
+  {
+    accessorKey: "image",
+    header: "Image",
     cell: ({ row }) => (
-        <Link className="cursor-pointer font-semibold text-orange-600" href={row.original.banner}>{row.original.banner}</Link>
-    )
+      <Link
+        className="cursor-pointer font-semibold text-orange-600"
+        href={row.original.image}
+      >
+        {row.original.image}
+      </Link>
+    ),
   },
   {
     accessorKey: "createdAt",

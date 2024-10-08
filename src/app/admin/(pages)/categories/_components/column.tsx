@@ -5,6 +5,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { CellAction } from "./cell-action";
+import Link from "next/link";
 
 export type CategoryColumn = {
   id: string;
@@ -21,6 +22,14 @@ export const columns: ColumnDef<CategoryColumn>[] = [
   {
     accessorKey: "image",
     header: "Image",
+    cell: ({ row }) => (
+      <Link
+        className="cursor-pointer font-semibold text-orange-600"
+        href={row.original.image}
+      >
+        {row.original.image}
+      </Link>
+    ),
   },
   {
     accessorKey: "createdAt",

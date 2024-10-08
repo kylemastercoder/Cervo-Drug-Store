@@ -1,15 +1,26 @@
+"use client";
+
+import { getCategoriesNavbar } from "@/actions/category";
+import { Categories } from "@prisma/client";
 import { IconChevronDown } from "@tabler/icons-react";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const NavLinks = () => {
-  const items = [
-    "Medicines & Treatments",
-    "Personal Care",
-    "Medical Supplies",
-    "Baby & Kids",
-    "Groceries",
-  ];
+  const [items, setItems] = useState<Categories[]>([]);
+  useEffect(() => {
+    const fetchPromotions = async () => {
+      const response = await getCategoriesNavbar();
+      if (response.data) {
+        setItems(response.data);
+      } else {
+        toast.error(response.error || "An error occurred");
+      }
+    };
+
+    fetchPromotions();
+  }, []);
   const subItems = [
     "Specialty Medicines",
     "Track Your Order",
@@ -18,14 +29,22 @@ const NavLinks = () => {
   ];
   return (
     <div className="flex items-center gap-10">
-      {items.map((item, index) => (
-        <Link key={index} className="flex items-center font-semibold gap-2" href="/">
-          <span>{item}</span>
+      {items.map((item) => (
+        <Link
+          key={item.id}
+          className="flex items-center font-semibold gap-2"
+          href="#"
+        >
+          <span>{item.name}</span>
           <IconChevronDown color="black" size={14} />
         </Link>
       ))}
       {subItems.map((item, index) => (
-        <Link key={index} className="flex items-center gap-2 font-semibold" href="/">
+        <Link
+          key={index}
+          className="flex items-center gap-2 font-semibold"
+          href="/"
+        >
           <span>{item}</span>
         </Link>
       ))}

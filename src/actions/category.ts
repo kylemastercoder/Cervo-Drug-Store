@@ -24,6 +24,26 @@ export const getAllCategories = async () => {
   }
 };
 
+export const getCategoriesNavbar = async () => {
+  try {
+    const data = await db.categories.findMany({
+      orderBy: {
+        createdAt: "asc",
+      },
+      take: 6,
+    });
+
+    if (!data) {
+      return { error: "No categories found." };
+    }
+
+    return { data };
+  } catch (error) {
+    console.error(error);
+    return { error: "Something went wrong." };
+  }
+};
+
 export const createCategory = async (
   values: z.infer<typeof CategoryValidation>
 ) => {
@@ -36,11 +56,18 @@ export const createCategory = async (
 
   const { name, image } = validatedField.data;
 
+  const tags = name
+    .toLowerCase()
+    .replace(/,/g, "") // Remove commas
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/&/g, "and"); // Replace "&" with "and"
+
   try {
     const data = await db.categories.create({
       data: {
         name,
         image,
+        tags,
       },
     });
 
@@ -71,6 +98,12 @@ export const updateCategory = async (
 
   const { name, image } = validatedField.data;
 
+  const tags = name
+    .toLowerCase()
+    .replace(/,/g, "") // Remove commas
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/&/g, "and"); // Replace "&" with "and"
+
   try {
     const data = await db.categories.update({
       where: {
@@ -79,6 +112,7 @@ export const updateCategory = async (
       data: {
         name,
         image,
+        tags,
       },
     });
 

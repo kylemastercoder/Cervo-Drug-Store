@@ -12,6 +12,7 @@ import Image from "next/image";
 import { Categories } from "@prisma/client";
 import { toast } from "sonner";
 import { getAllCategories } from "@/actions/category";
+import Link from "next/link";
 
 const CategoriesCarousel = () => {
   const [categories, setCategories] = useState<Categories[]>([]);
@@ -27,18 +28,25 @@ const CategoriesCarousel = () => {
 
     fetchPromotions();
   }, []);
+
   return (
     <Carousel className="w-full">
-      <CarouselContent className="-ml-6">
+      <CarouselContent className="flex space-x-4">
         {categories.map((item) => (
           <CarouselItem
             key={item.id}
-            className="pl-4 md:basis-1/2 lg:basis-[15%]"
+            className="flex flex-col items-center justify-center p-4 lg:basis-[15%]"
           >
-            <div className="p-3">
-              <Image src={item.image} alt="Category" width={300} height={300} />
-              <p className="text-center font-semibold">{item.name}</p>
-            </div>
+            <Link href={`/collections/${item.tags}`} className="flex flex-col items-center justify-center">
+              <Image
+                src={item.image}
+                alt="Category"
+                width={300} // Change as needed for consistent size
+                height={300} // Change as needed for consistent size
+                className="object-contain"
+              />
+              <p className="text-center font-semibold mt-2">{item.name}</p>
+            </Link>
           </CarouselItem>
         ))}
       </CarouselContent>
